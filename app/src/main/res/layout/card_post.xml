@@ -35,7 +35,7 @@
         android:maxLines="1"
         android:text="Netology"
         app:layout_constraintBottom_toTopOf="@id/data"
-        app:layout_constraintEnd_toStartOf="@id/more"
+        app:layout_constraintEnd_toStartOf="@+id/menu"
         app:layout_constraintStart_toEndOf="@id/avatar"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -50,7 +50,7 @@
         app:layout_constraintTop_toBottomOf="@+id/autor" />
 
     <ImageButton
-        android:id="@+id/more"
+        android:id="@+id/menu"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@null"
@@ -67,7 +67,7 @@
         android:layout_marginTop="@dimen/ofset"
         android:ellipsize="end"
         android:maxLines="10"
-        android:text="«Нетология» специализируется на переподготовке, высшем образовании (совместно с вузами) и дополнительном обучении специалистов в сферах интернет-маркетинга, управления проектами, дизайна и пользовательского интерфейса, программирования, аналитики и data science, финансов, а также творческих профессий и социальных навыков."
+        android:text="«Нетология» специализируется олорлорлорлорлорлорло "
         app:layout_constraintStart_toStartOf="@+id/avatar"
         app:layout_constraintTop_toBottomOf="@id/topBarrier" />
 
@@ -78,8 +78,9 @@
         android:text="Читать далее"
         app:layout_constraintWidth_percent="1"
         android:textSize="10sp"
-        app:layout_constraintEnd_toEndOf="@id/content"
+        app:layout_constraintEnd_toEndOf="parent"
         android:visibility="gone"
+        tools:visibility="visible"
         app:layout_constraintTop_toBottomOf="@id/content" />
 
 
@@ -89,7 +90,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:layout_marginTop="16dp"
-        android:text="1000"
+        android:text="2222222"
         app:layout_constraintBottom_toBottomOf="@+id/like"
         app:layout_constraintStart_toEndOf="@id/like"
         app:layout_constraintTop_toBottomOf="@id/readMoreButton" />
@@ -122,7 +123,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:layout_marginTop="16dp"
-        android:text="50"
+        android:text="2222222"
         app:layout_constraintBottom_toBottomOf="@+id/like"
         app:layout_constraintStart_toEndOf="@+id/repost"
         app:layout_constraintTop_toBottomOf="@id/readMoreButton" />
@@ -141,9 +142,10 @@
 
     <TextView
         android:id="@+id/textView"
+
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="500"
+        android:text="500222222"
         app:layout_constraintBottom_toBottomOf="@+id/views"
-        app:layout_constraintEnd_toEndOf="@id/content" />
+        app:layout_constraintEnd_toEndOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

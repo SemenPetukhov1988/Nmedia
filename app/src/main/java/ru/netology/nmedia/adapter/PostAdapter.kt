@@ -3,6 +3,7 @@ package ru.netology.nmedia.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.PopupMenu
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -10,29 +11,32 @@ import ru.netology.nmedia.MainActivity
 import ru.netology.nmedia.R
 import ru.netology.nmedia.databinding.CardPostBinding
 import ru.netology.nmedia.dto.Post
-import ru.netology.nmedia.showFullTextDialog
+
 import kotlin.math.ceil
 
-typealias LikeListener = (Post) -> Unit
-typealias RepostListener = (Post) -> Unit
-typealias MainListener  = (Post) -> Unit
+interface OnInteractionListener {
+    fun onLike(post: Post)
+    fun OnRepost(post: Post)
+    fun OnRemove(post: Post)
+    fun onEdit(post: Post)
+
+    fun onShowFulText(post: Post)
+}
+
 
 class PostAdapter(
-    private val likeCallback: LikeListener,
-    private val repostCallback: RepostListener,
-    private val activity: MainActivity
-) : ListAdapter<Post,PostViewHolder>(PostViewHolder.PostDiffCallback) {
+    private val onInteractionListener: OnInteractionListener
+) : ListAdapter<Post, PostViewHolder>(PostViewHolder.PostDiffCallback) {
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {
         val binding = CardPostBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return PostViewHolder(binding, likeCallback, repostCallback,activity)
+        return PostViewHolder(binding, onInteractionListener)
     }
 
     override fun onBindViewHolder(holder: PostViewHolder, position: Int) {
         holder.bind(getItem(position))
     }
-
 
 }
 
@@ -61,9 +65,7 @@ fun formatnumber(count: Int): String {
 
 class PostViewHolder(
     private val binding: CardPostBinding,
-    private val likeCallback: LikeListener,
-    private val repostCallback: RepostListener,
-    private val activity: MainActivity
+    private val onInteractionListener: OnInteractionListener
 ) :
     RecyclerView.ViewHolder(binding.root) {
     fun bind(post: Post) = with(binding) {
@@ -87,24 +89,48 @@ class PostViewHolder(
             readMoreButton.visibility = View.GONE
         }
         readMoreButton.setOnClickListener {
-         activity.showFullTextDialog(post.content)
+            onInteractionListener.onShowFulText(post)
 
 
-       }
-        repost.setOnClickListener {
-            post.repostByMe = false
-            repostCallback(post)
 
+  }
+            repost.setOnClickListener {
+                post.repostByMe = false
+                onInteractionListener.OnRepost(post)
+
+            }
+
+            like.setOnClickListener { onInteractionListener.onLike(post) }
+
+            menu.setOnClickListener {
+                PopupMenu(it.context, it).apply {
+                    inflate(R.menu.options_menu)
+                    setOnMenuItemClickListener { item ->
+                        when (item.itemId) {
+                            R.id.remove -> {
+                                onInteractionListener.OnRemove(post)
+                                true
+                            }
+
+                            R.id.edit -> {
+                                onInteractionListener.onEdit(post)
+                                true
+                            }
+
+                            else -> false
+
+                        }
+                    }
+
+                }.show()
+            }
         }
 
-        like.setOnClickListener { likeCallback(post) }
 
+        object PostDiffCallback : DiffUtil.ItemCallback<Post>() {
+            override fun areItemsTheSame(oldItem: Post, newItem: Post) = oldItem.id == newItem.id
+
+            override fun areContentsTheSame(oldItem: Post, newItem: Post) = oldItem == newItem
+
+        }
     }
-
-    object PostDiffCallback : DiffUtil.ItemCallback<Post>() {
-        override fun areItemsTheSame(oldItem: Post, newItem: Post) = oldItem.id == newItem.id
-
-        override fun areContentsTheSame(oldItem: Post, newItem: Post) = oldItem == newItem
-
-    }
-}

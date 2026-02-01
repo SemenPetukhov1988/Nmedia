@@ -58,8 +58,9 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onShowFulText(post: Post) {
-               showFullText(post.content)
+                showFullText(post.content)
             }
+
 
         }
 
@@ -91,6 +92,7 @@ class MainActivity : AppCompatActivity() {
             binding.editcontent?.setText("")
             binding.canselMenu?.visibility = View.INVISIBLE
             AndroidUtils.hideKeyboard(binding.root)
+            viewModel.stopEditing()
 
         }
         binding.save?.setOnClickListener {
@@ -106,6 +108,7 @@ class MainActivity : AppCompatActivity() {
             AndroidUtils.hideKeyboard(binding.root)
         }
     }
+
     fun showFullText(author: String) {
         val builder = AlertDialog.Builder(this)
         builder.setTitle("Полный текст")

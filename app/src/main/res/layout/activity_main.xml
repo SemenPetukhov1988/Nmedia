@@ -59,7 +59,7 @@
         android:layout_width="match_parent"
         android:layout_height="42dp"
         android:background="@color/ic_launcher_background"
-        android:visibility="invisible"
+
         app:layout_constraintBottom_toTopOf="@id/editcontent">
 
         <ImageView
@@ -91,7 +91,8 @@
             android:text="Редактирование"
             android:textStyle="bold"
             app:layout_constraintStart_toEndOf="@id/pensil"
-            tools:layout_editor_absoluteY="7dp" />
+            app:layout_constraintTop_toTopOf="parent"
+            />
 
         <TextView
             android:layout_width="wrap_content"

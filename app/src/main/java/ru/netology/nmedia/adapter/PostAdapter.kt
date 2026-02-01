@@ -11,6 +11,7 @@ import ru.netology.nmedia.MainActivity
 import ru.netology.nmedia.R
 import ru.netology.nmedia.databinding.CardPostBinding
 import ru.netology.nmedia.dto.Post
+import ru.netology.nmedia.repository.PostRepository
 
 import kotlin.math.ceil
 
@@ -21,6 +22,7 @@ interface OnInteractionListener {
     fun onEdit(post: Post)
 
     fun onShowFulText(post: Post)
+
 }
 
 
@@ -98,6 +100,7 @@ class PostViewHolder(
                 post.repostByMe = false
                 onInteractionListener.OnRepost(post)
 
+
             }
 
             like.setOnClickListener { onInteractionListener.onLike(post) }
@@ -116,6 +119,8 @@ class PostViewHolder(
                                 onInteractionListener.onEdit(post)
                                 true
                             }
+
+
 
                             else -> false
 

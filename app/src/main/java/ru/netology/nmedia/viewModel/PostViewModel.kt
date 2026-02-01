@@ -39,16 +39,20 @@ class PostViewModel : ViewModel() {
         }
         edited.value = empty
     }
-    fun edit (post: Post) {
+
+    fun edit(post: Post) {
         edited.value = post
 
     }
+
     fun repostById(id: Long) = repository.repostById(id)
     fun likeById(id: Long) = repository.likeById(id)
     fun removeById(id: Long) = repository.removeById(id)
 
-    fun getFirstWord(): String {
-        return edited.value?.content?.split(" ")?.firstOrNull() ?: ""
+    fun getFirstWord(): String {   return edited.value?.content?.split(" ")?.firstOrNull() ?: "" }
+
+    fun stopEditing() {
+         edited.value = empty
     }
 
 

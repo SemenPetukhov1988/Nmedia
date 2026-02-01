@@ -98,6 +98,8 @@ class PostRepositoryMemory : PostRepository {
     }
 
 
+
+
     // функция репоста
     override fun repostById(id: Long) {
         posts = posts.map {

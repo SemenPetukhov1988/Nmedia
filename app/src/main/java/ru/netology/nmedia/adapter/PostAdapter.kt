@@ -92,10 +92,11 @@ class PostViewHolder(
         }
         readMoreButton.setOnClickListener {
             onInteractionListener.onShowFulText(post)
+        }
 
 
 
-  }
+
             repost.setOnClickListener {
                 post.repostByMe = false
                 onInteractionListener.OnRepost(post)
@@ -119,8 +120,6 @@ class PostViewHolder(
                                 onInteractionListener.onEdit(post)
                                 true
                             }
-
-
 
                             else -> false
 

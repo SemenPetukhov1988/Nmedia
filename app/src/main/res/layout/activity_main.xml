@@ -59,7 +59,7 @@
         android:layout_width="match_parent"
         android:layout_height="42dp"
         android:background="@color/ic_launcher_background"
-
+        android:visibility="invisible"
         app:layout_constraintBottom_toTopOf="@id/editcontent">
 
         <ImageView
@@ -91,14 +91,13 @@
             android:text="Редактирование"
             android:textStyle="bold"
             app:layout_constraintStart_toEndOf="@id/pensil"
-            app:layout_constraintTop_toTopOf="parent"
-            />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
+            android:id="@+id/firstWord"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-           android:id="@+id/firstWord"
             android:text="Первая строчка поста"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/pensil"

@@ -5,6 +5,5 @@
 
     <item android:id="@+id/edit"
         android:title="Редактировать" />
-    <item android:id="@+id/editAll"
-        android:title="Лайкнуть все посты" />
+
 </menu>

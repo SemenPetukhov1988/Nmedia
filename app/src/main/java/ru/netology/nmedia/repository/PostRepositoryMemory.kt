@@ -87,27 +87,29 @@ class PostRepositoryMemory : PostRepository {
     }
 
     override fun save(post: Post) {
-         posts= if (post.id==0L) {
-             listOf(post.copy(id=nextId++)) +posts
-         }else {
-             posts.map {
-                 if (it.id != post.id) it else it.copy(content = post.content)
-             }
-         }
-        data.value=posts
+        posts = if (post.id == 0L) {
+            listOf(post.copy(id = nextId++)) + posts
+        } else {
+            posts.map {
+                if (it.id != post.id) it else it.copy(content = post.content)
+            }
+        }
+        data.value = posts
     }
-
-
 
 
     // функция репоста
     override fun repostById(id: Long) {
         posts = posts.map {
             if (it.id != id) it
-            else it.copy(
-                repostByMe = !it.repostByMe, // Теперь пользователь репостнул
-                repostQality = (it.repostQality.toInt() + 1).toString() // Увеличение количества репостов
-            )
+            else if (!it.repostByMe) {
+                it.copy(
+                    repostByMe = true, // Теперь пользователь репостнул
+                    repostQality = (it.repostQality.toInt() + 1).toString() // Увеличение количества репостов
+                )
+            } else {
+                it
+            }
         }
         data.value = posts
     }

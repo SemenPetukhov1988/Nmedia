@@ -74,16 +74,11 @@ class PostViewHolder(
         content.text = post.content
         data.text = post.data
         autor.text = post.author
-        likeQuantity.text = formatnumber(post.likeQuantity.toInt())
-        repostQuantity.text = formatnumber(post.repostQality.toInt())
+        like.text = formatnumber(post.likeQuantity.toInt())
+        repost.text = formatnumber(post.repostQality.toInt())
 
-        repost.setImageResource(
-            if (post.repostByMe) R.drawable.share_77929 else R.drawable._share_90177
-        )
-
-        like.setImageResource(
-            if (post.likedByMe) R.drawable.like_red else R.drawable.heart_icon_icons_com_71176
-        )
+       repost.isChecked = post.repostByMe
+        like.isChecked = post.likedByMe
 
         if (post.content.length > 400) {
             readMoreButton.visibility = View.VISIBLE
@@ -94,47 +89,46 @@ class PostViewHolder(
             onInteractionListener.onShowFulText(post)
         }
 
+        repost.setOnClickListener {
+         if (!post.repostByMe) {
+             onInteractionListener.OnRepost(post)
+         }
 
 
+        }
 
-            repost.setOnClickListener {
-                post.repostByMe = false
-                onInteractionListener.OnRepost(post)
+        like.setOnClickListener { onInteractionListener.onLike(post) }
 
-
-            }
-
-            like.setOnClickListener { onInteractionListener.onLike(post) }
-
-            menu.setOnClickListener {
-                PopupMenu(it.context, it).apply {
-                    inflate(R.menu.options_menu)
-                    setOnMenuItemClickListener { item ->
-                        when (item.itemId) {
-                            R.id.remove -> {
-                                onInteractionListener.OnRemove(post)
-                                true
-                            }
-
-                            R.id.edit -> {
-                                onInteractionListener.onEdit(post)
-                                true
-                            }
-
-                            else -> false
-
+        menu.setOnClickListener {
+            PopupMenu(it.context, it).apply {
+                inflate(R.menu.options_menu)
+                setOnMenuItemClickListener { item ->
+                    when (item.itemId) {
+                        R.id.remove -> {
+                            onInteractionListener.OnRemove(post)
+                            true
                         }
+
+                        R.id.edit -> {
+                            onInteractionListener.onEdit(post)
+                            true
+                        }
+
+                        else -> false
+
                     }
+                }
 
-                }.show()
-            }
+            }.show()
         }
-
-
-        object PostDiffCallback : DiffUtil.ItemCallback<Post>() {
-            override fun areItemsTheSame(oldItem: Post, newItem: Post) = oldItem.id == newItem.id
-
-            override fun areContentsTheSame(oldItem: Post, newItem: Post) = oldItem == newItem
-
-        }
+        repost.isEnabled = !post.repostByMe
     }
+
+
+    object PostDiffCallback : DiffUtil.ItemCallback<Post>() {
+        override fun areItemsTheSame(oldItem: Post, newItem: Post) = oldItem.id == newItem.id
+
+        override fun areContentsTheSame(oldItem: Post, newItem: Post) = oldItem == newItem
+
+    }
+}

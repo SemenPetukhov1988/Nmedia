@@ -1,15 +1,18 @@
-package ru.netology.nmedia
+package ru.netology.nmedia.activity
 
 import android.app.AlertDialog
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.launch
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.core.net.toUri
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import ru.netology.nmedia.R
 import ru.netology.nmedia.adapter.OnInteractionListener
 import ru.netology.nmedia.adapter.PostAdapter
 import ru.netology.nmedia.databinding.ActivityMainBinding
@@ -29,25 +32,39 @@ class MainActivity : AppCompatActivity() {
         ViewCompat.setOnApplyWindowInsetsListener(binding.main) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(
-                systemBars.left,
-                systemBars.top,
-                systemBars.right,
-                systemBars.bottom
+                systemBars.left, systemBars.top, systemBars.right, systemBars.bottom
             )
             insets
         }
 
         // Реализация оболочки для поста, чтобы он отслеживался
         val viewModel: PostViewModel by viewModels()
+        val newPostLauncher = registerForActivityResult(NewPostContract) {
+            it ?: return@registerForActivityResult
+            viewModel.save(it)
+        }
 
         val adapter = PostAdapter(object : OnInteractionListener {
+
+
+
             override fun onLike(post: Post) {
                 viewModel.likeById(post.id)
             }
 
             override fun OnRepost(post: Post) {
                 viewModel.repostById(post.id)
+                // отправка текста поста в другие приложения
+                val intent = Intent().apply {
+                    action = Intent.ACTION_SEND
+                    type = "text/plain"
+                    putExtra(Intent.EXTRA_TEXT, post.content)
+                }
+                // красивое окошко вызова окна где выбираеш приложение для репоста
+                val chooser = Intent.createChooser(intent, "Поделиться")
+                startActivity(chooser)
             }
+
 
             override fun OnRemove(post: Post) {
                 viewModel.removeById(post.id)
@@ -57,13 +74,17 @@ class MainActivity : AppCompatActivity() {
                 viewModel.edit(post)
             }
 
+            override fun onVideo(video: String) {
+               startActivity(
+                Intent(Intent.ACTION_VIEW, video.toUri()))
+            }
+
             override fun onShowFulText(post: Post) {
-                showFullText(post.content)
+//                showFullText(post.content)
             }
 
 
         }
-
 
         )
         binding.list?.adapter = adapter
@@ -77,50 +98,13 @@ class MainActivity : AppCompatActivity() {
             }
 
         }
-        viewModel.edited.observe(this) { post ->
-            if (post.id != 0L) {
-                val firstWord = viewModel.getFirstWord()
-                binding.firstWord?.setText(firstWord)
-                binding.canselMenu?.visibility = View.VISIBLE
-                binding.editcontent?.setText(post.content)
-                AndroidUtils.showKeyboard(binding.root)
 
-            }
 
-        }
-        binding.cansel?.setOnClickListener {
-            binding.editcontent?.setText("")
-            binding.canselMenu?.visibility = View.INVISIBLE
-            AndroidUtils.hideKeyboard(binding.root)
-            viewModel.stopEditing()
+        binding.add.setOnClickListener {
 
+            newPostLauncher.launch()
         }
-        binding.save?.setOnClickListener {
-            val text = binding.editcontent?.text.toString()
-            if (text.isBlank()) {
-                Toast.makeText(this, R.string.Error, Toast.LENGTH_LONG).show()
-                return@setOnClickListener
-            }
-            viewModel.save(text)
-            binding.canselMenu?.visibility = View.INVISIBLE
-            binding.editcontent?.setText("")
-            binding.editcontent?.clearFocus()
-            AndroidUtils.hideKeyboard(binding.root)
-        }
-    }
 
-    fun showFullText(author: String) {
-        val builder = AlertDialog.Builder(this)
-        builder.setTitle("Полный текст")
-        builder.setMessage(author)
-        builder.setPositiveButton("Закрыть") { dialog, _ ->
-            dialog.dismiss()
-        }
-        val dialog = builder.create()
-        dialog.show()
+
     }
 }
-
-
-
-

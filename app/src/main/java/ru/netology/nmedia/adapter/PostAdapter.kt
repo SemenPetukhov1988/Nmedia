@@ -7,7 +7,7 @@ import androidx.appcompat.widget.PopupMenu
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import ru.netology.nmedia.MainActivity
+import ru.netology.nmedia.activity.MainActivity
 import ru.netology.nmedia.R
 import ru.netology.nmedia.databinding.CardPostBinding
 import ru.netology.nmedia.dto.Post
@@ -20,7 +20,7 @@ interface OnInteractionListener {
     fun OnRepost(post: Post)
     fun OnRemove(post: Post)
     fun onEdit(post: Post)
-
+    fun onVideo(video : String)
     fun onShowFulText(post: Post)
 
 }
@@ -80,13 +80,14 @@ class PostViewHolder(
        repost.isChecked = post.repostByMe
         like.isChecked = post.likedByMe
 
-        if (post.content.length > 400) {
-            readMoreButton.visibility = View.VISIBLE
-        } else {
-            readMoreButton.visibility = View.GONE
+        if (post.videoVisibility) {
+            binding.video.visibility = View.VISIBLE
+
         }
-        readMoreButton.setOnClickListener {
-            onInteractionListener.onShowFulText(post)
+
+        video.setOnClickListener {
+            onInteractionListener.onVideo(post.videoUrl)
+
         }
 
         repost.setOnClickListener {

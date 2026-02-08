@@ -29,6 +29,8 @@ class PostViewModel : ViewModel() {
     val data = repository.getData()
     val edited = MutableLiveData(empty)
 
+
+
     fun save(content: String) {
         edited.value?.let {
             val text = content.trim()
@@ -49,11 +51,9 @@ class PostViewModel : ViewModel() {
     fun likeById(id: Long) = repository.likeById(id)
     fun removeById(id: Long) = repository.removeById(id)
 
-    fun getFirstWord(): String {   return edited.value?.content?.split(" ")?.firstOrNull() ?: "" }
 
-    fun stopEditing() {
-         edited.value = empty
-    }
+
+    
 
 
 }

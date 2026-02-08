@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="16dp"
-    tools:context=".MainActivity">
+    tools:context=".activity.MainActivity">
 
     <ImageView
         android:id="@+id/avatar"
@@ -74,15 +74,14 @@
         app:layout_constraintStart_toStartOf="@+id/avatar"
         app:layout_constraintTop_toBottomOf="@id/topBarrier" />
 
-    <Button
-        android:id="@+id/readMoreButton"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="Читать далее"
-        android:textSize="10sp"
+    <ImageView
+        android:id="@+id/video"
+        android:layout_width="373dp"
+        android:layout_height="196dp"
+        android:src="@drawable/video"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/content"
+        app:layout_constraintTop_toBottomOf="@+id/content"
         app:layout_constraintWidth_percent="1"
         tools:visibility="visible" />
 
@@ -101,7 +100,7 @@
         android:text="10"
         app:icon="@drawable/ic_like_selector"
         app:layout_constraintStart_toStartOf="@id/content"
-        app:layout_constraintTop_toBottomOf="@id/readMoreButton"
+        app:layout_constraintTop_toBottomOf="@id/video"
         tools:layout_editor_absoluteX="16dp" />
 
     <com.google.android.material.button.MaterialButton

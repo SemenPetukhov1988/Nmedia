@@ -16,7 +16,7 @@ class PostRepositoryMemory : PostRepository {
         Post(
             nextId++, "Нетология. Университет интернет профессий будущего", "13 января 2026 года",
             "«Нетология» ",
-            false, "5199", false, "5199"
+            false, "5199", false, "5199", videoVisibility = true, videoUrl = "https://smotrim.ru/video/2316891"
         ),
         Post(
             nextId++, "Нетология. Университет интернет профессий будущего", "13 января 2026 года",

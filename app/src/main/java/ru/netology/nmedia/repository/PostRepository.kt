@@ -16,9 +16,5 @@ interface PostRepository {
 
     fun save (post: Post)
 
-
-
-
-
-
+    fun updatePost(id: Long?, content: String)
 }

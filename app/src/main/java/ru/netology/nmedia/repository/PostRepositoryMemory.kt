@@ -91,13 +91,22 @@ class PostRepositoryMemory : PostRepository {
             listOf(post.copy(id = nextId++)) + posts
         } else {
             posts.map {
-                if (it.id != post.id) it else it.copy(content = post.content)
+                if (it.id != post.id) it else it
             }
         }
         data.value = posts
     }
 
-
+    override fun updatePost(id: Long?, content: String) {
+        posts = posts.map { post ->
+            if (post.id == id) {
+                post.copy(content = content) // Копируем только контент, оставляя остальные поля неизменными
+            } else {
+                post
+            }
+        }
+        data.value = posts
+    }
     // функция репоста
     override fun repostById(id: Long) {
         posts = posts.map {

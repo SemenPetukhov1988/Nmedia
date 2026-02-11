@@ -1,14 +1,17 @@
 package ru.netology.nmedia.adapter
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.ActivityResultLauncher
 import androidx.appcompat.widget.PopupMenu
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import ru.netology.nmedia.activity.MainActivity
 import ru.netology.nmedia.R
+import ru.netology.nmedia.activity.NewPostActivity
 import ru.netology.nmedia.databinding.CardPostBinding
 import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.repository.PostRepository
@@ -20,20 +23,21 @@ interface OnInteractionListener {
     fun OnRepost(post: Post)
     fun OnRemove(post: Post)
     fun onEdit(post: Post)
-    fun onVideo(video : String)
+    fun onVideo(video: String)
     fun onShowFulText(post: Post)
 
 }
 
 
 class PostAdapter(
+    private val editPostLauncher: ActivityResultLauncher<Intent>,
     private val onInteractionListener: OnInteractionListener
 ) : ListAdapter<Post, PostViewHolder>(PostViewHolder.PostDiffCallback) {
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {
         val binding = CardPostBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return PostViewHolder(binding, onInteractionListener)
+        return PostViewHolder(binding, editPostLauncher,onInteractionListener)
     }
 
     override fun onBindViewHolder(holder: PostViewHolder, position: Int) {
@@ -67,7 +71,10 @@ fun formatnumber(count: Int): String {
 
 class PostViewHolder(
     private val binding: CardPostBinding,
+    private val editPostLauncher: ActivityResultLauncher<Intent>,
     private val onInteractionListener: OnInteractionListener
+
+
 ) :
     RecyclerView.ViewHolder(binding.root) {
     fun bind(post: Post) = with(binding) {
@@ -77,7 +84,7 @@ class PostViewHolder(
         like.text = formatnumber(post.likeQuantity.toInt())
         repost.text = formatnumber(post.repostQality.toInt())
 
-       repost.isChecked = post.repostByMe
+        repost.isChecked = post.repostByMe
         like.isChecked = post.likedByMe
 
         if (post.videoVisibility) {
@@ -91,9 +98,9 @@ class PostViewHolder(
         }
 
         repost.setOnClickListener {
-         if (!post.repostByMe) {
-             onInteractionListener.OnRepost(post)
-         }
+            if (!post.repostByMe) {
+                onInteractionListener.OnRepost(post)
+            }
 
 
         }
@@ -111,8 +118,13 @@ class PostViewHolder(
                         }
 
                         R.id.edit -> {
-                            onInteractionListener.onEdit(post)
+                            val intent = Intent(it.context, NewPostActivity::class.java)
+                            intent.putExtra(Intent.EXTRA_TEXT, post.content)
+                            intent.putExtra("POST_ID", post.id)
+                            editPostLauncher.launch(intent) // Используем лончер
                             true
+
+
                         }
 
                         else -> false

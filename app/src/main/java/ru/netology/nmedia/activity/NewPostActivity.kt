@@ -23,7 +23,7 @@ class NewPostActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         val binding = ActivityNewPostBinding.inflate(layoutInflater)
-
+        Log.d("NewPostActivity", "Save button clicked")
         setContentView(binding.root)
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
@@ -32,24 +32,41 @@ class NewPostActivity : AppCompatActivity() {
             insets
         }
 
+        val receivedText = intent.getStringExtra(Intent.EXTRA_TEXT)
+        val postId = intent.getLongExtra("POST_ID", -1L)
+        binding.content.setText(receivedText)
+
         binding.save.setOnClickListener {
             val text = binding.content.text.toString()
-            if (text.isBlank()) {
-                setResult(RESULT_CANCELED)
-            } else {
-                val intent = Intent().apply {
+            if (text.isNotEmpty()) {
+                val resultIntent = Intent().apply {
                     putExtra(Intent.EXTRA_TEXT, text)
-                }
-                setResult(RESULT_OK, intent)
+                    if (postId != -1L) putExtra("POST_ID", postId)
 
+                }
+                setResult(Activity.RESULT_OK, resultIntent)
+                finish()
             }
-            finish()
         }
 
     }
 }
 
-object NewPostContract : ActivityResultContract<Unit, String?>() {
+
+class EditPostContract : ActivityResultContract<Intent, Pair<Long?, String>?>() {
+    override fun createIntent(context: Context, input: Intent): Intent {
+        return input
+    }
+
+    override fun parseResult(resultCode: Int, intent: Intent?): Pair<Long?, String>? {
+        if (intent == null || resultCode != Activity.RESULT_OK) return null
+        val id = intent.getLongExtra("POST_ID", -1L)
+        val content = intent.getStringExtra(Intent.EXTRA_TEXT)
+        return if (id != -1L && content != null) Pair(id, content) else null
+    }
+}
+class NewPostContract : ActivityResultContract<Unit, String?>() {
+
     override fun createIntent(context: Context, input: Unit) =
         Intent(context, NewPostActivity::class.java)
 

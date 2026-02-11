@@ -9,7 +9,7 @@ data class Post(
     val data: String,
     var content: String,
     val likedByMe: Boolean = false,
-    val likeQuantity: String = "1000",
+    val likeQuantity: String = "120000",
     var repostByMe : Boolean = false,
     val repostQality : String = "50",
     val videoVisibility: Boolean = false,

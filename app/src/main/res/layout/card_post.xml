@@ -27,8 +27,8 @@
 
     <TextView
         android:id="@+id/autor"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_width="253dp"
+        android:layout_height="16dp"
         android:layout_marginStart="16dp"
         android:ellipsize="end"
         android:maxLines="1"
@@ -40,28 +40,27 @@
 
     <TextView
         android:id="@+id/data"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:layout_width="134dp"
+        android:layout_height="17dp"
         android:text="08 января 2026 года"
         app:layout_constraintBottom_toBottomOf="@+id/avatar"
-        app:layout_constraintStart_toEndOf="@id/avatar"
+        app:layout_constraintStart_toStartOf="@+id/autor"
         app:layout_constraintTop_toBottomOf="@+id/autor" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/menu"
+        style="@style/Widget.Material3.Button.IconButton"
+        android:layout_width="48dp"
+        android:layout_height="45dp"
 
-       app:rippleColor="?attr/colorOnSurface"
-        android:layout_width="42dp"
-        android:layout_height="60dp"
-        android:backgroundTint="@android:color/transparent"
-        android:checkable="true"
         app:icon="@drawable/baseline_more_vert_24"
         app:iconPadding="0dp"
+        app:iconSize="24dp"
         app:iconTint="@color/black"
         app:layout_constraintBottom_toBottomOf="@+id/autor"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/autor" />
+        app:layout_constraintTop_toBottomOf="@+id/autor"
+        app:rippleColor="?attr/colorOnSurface" />
 
     <TextView
         android:id="@+id/content"
@@ -109,6 +108,7 @@
         android:layout_width="wrap_content"
         android:layout_height="32dp"
         android:layout_marginStart="10dp"
+
         android:checkable="true"
         android:insetTop="0dp"
         android:insetBottom="0dp"
@@ -124,7 +124,6 @@
         android:layout_height="20dp"
         android:layout_marginEnd="10dp"
         android:background="@null"
-
         android:scaleType="centerCrop"
         android:src="@drawable/views"
         app:layout_constraintBottom_toBottomOf="@id/like"

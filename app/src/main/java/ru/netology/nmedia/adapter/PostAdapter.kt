@@ -90,6 +90,8 @@ class PostViewHolder(
         if (post.videoVisibility) {
             binding.video.visibility = View.VISIBLE
 
+        }else{
+            binding.video.visibility = View.GONE
         }
 
         video.setOnClickListener {

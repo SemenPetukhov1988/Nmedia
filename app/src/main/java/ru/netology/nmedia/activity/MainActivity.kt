@@ -32,7 +32,7 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
-
+// делаем нашу вью мождель устойчивой к переворачиванию экрана
         val viewModel: PostViewModel by viewModels()
 
         val newPostLauncher = registerForActivityResult(NewPostContract()) { result ->
@@ -49,6 +49,7 @@ class MainActivity : AppCompatActivity() {
 
 
         val adapter = PostAdapter(editPostLauncher,object : OnInteractionListener {
+
             override fun onLike(post: Post) {
                 viewModel.likeById(post.id)
             }

@@ -15,13 +15,31 @@ import ru.netology.nmedia.repository.PostRepositorySharedPrefsImpl
 class PostViewModel (application: Application) : AndroidViewModel(application ) {
 
 
+    private val empty = Post(
+        id = 0,
+        author = "",
+        content = "",
+        data = "",
+        likeQuantity = "0",
+        likedByMe = false
+    )
     private val repository: PostRepository = PostRepositoryFilePrefsImpl(application)
 
     // создаем переменную куда кладем данные нашего поста
     val data = repository.getData()
+    val edited = MutableLiveData(empty)
+    fun save(content: String) {
+        edited.value?.let {
+            val text = content.trim()
+            if (it.content != text) {
+                repository.save(it.copy(content = text))
+            }
+        }
+        edited.value = empty
+    }
 
-    fun save(post: Post) {
-        repository.save(post)
+    fun edit(post: Post) {
+        edited.value = post
     }
 
 
@@ -29,9 +47,7 @@ class PostViewModel (application: Application) : AndroidViewModel(application ) 
     fun likeById(id: Long) = repository.likeById(id)
     fun removeById(id: Long) = repository.removeById(id)
 
-    fun updatePost(id: Long?, content: String) {
-        repository.updatePost(id, content)
-    }
+
 
 
 }

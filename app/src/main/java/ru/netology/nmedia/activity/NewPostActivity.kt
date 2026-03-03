@@ -1,75 +1,50 @@
 package ru.netology.nmedia.activity
 
-import android.app.Activity
-import android.content.Context
-import android.content.Intent
+
 import android.os.Bundle
-import android.util.Log
-import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
-import androidx.activity.result.contract.ActivityResultContract
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import ru.netology.nmedia.R
-import ru.netology.nmedia.databinding.ActivityIntentHandlerBinding
-import ru.netology.nmedia.databinding.ActivityNewPostBinding
-import ru.netology.nmedia.util.AndroidUtils
 
-class NewPostActivity : AppCompatActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        val binding = ActivityNewPostBinding.inflate(layoutInflater)
-        Log.d("NewPostActivity", "Save button clicked")
-        setContentView(binding.root)
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
+
+import ru.netology.nmedia.databinding.FragmentNewPostBinding
+
+
+import ru.netology.nmedia.viewModel.PostViewModel
+import kotlin.getValue
+import kotlin.toString
+
+class NewPostFragment : Fragment() {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        val viewModel: PostViewModel by activityViewModels()
+
+        val binding = FragmentNewPostBinding.inflate(layoutInflater)
+        // код для получения данных от другого фрагмента
+        arguments?.getString("content")?.let {
+            binding.content.setText(it)
+            arguments?.remove("content")
         }
-
-        val receivedText = intent.getStringExtra(Intent.EXTRA_TEXT)
-        val postId = intent.getLongExtra("POST_ID", -1L)
-        binding.content.setText(receivedText)
 
         binding.save.setOnClickListener {
-            val text = binding.content.text.toString()
-            if (text.isNotEmpty()) {
-                val resultIntent = Intent().apply {
-                    putExtra(Intent.EXTRA_TEXT, text)
-                    if (postId != -1L) putExtra("POST_ID", postId)
-
-                }
-                setResult(Activity.RESULT_OK, resultIntent)
-                finish()
+            if (!binding.content.text.isNullOrBlank()) {
+                val content = binding.content.text.toString()
+                viewModel.save(content)
             }
+            findNavController().navigateUp()
         }
-
+        return binding.root
     }
+
+
 }
 
 
-class EditPostContract : ActivityResultContract<Intent, Pair<Long?, String>?>() {
-    override fun createIntent(context: Context, input: Intent): Intent {
-        return input
-    }
-
-    override fun parseResult(resultCode: Int, intent: Intent?): Pair<Long?, String>? {
-        if (intent == null || resultCode != Activity.RESULT_OK) return null
-        val id = intent.getLongExtra("POST_ID", -1L)
-        val content = intent.getStringExtra(Intent.EXTRA_TEXT)
-        return if (id != -1L && content != null) Pair(id, content) else null
-    }
-}
-class NewPostContract : ActivityResultContract<Unit, String?>() {
-
-    override fun createIntent(context: Context, input: Unit) =
-        Intent(context, NewPostActivity::class.java)
-
-    override fun parseResult(resultCode: Int, intent: Intent?) =
-        intent?.getStringExtra(Intent.EXTRA_TEXT)
-}

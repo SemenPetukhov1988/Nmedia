@@ -15,7 +15,6 @@ import java.net.Proxy
 
 class PostRepositoryFilePrefsImpl(private val context: Context) : PostRepository {
 
-
     private var nextId = 1L
 
     var posts = emptyList<Post>()
@@ -31,91 +30,98 @@ class PostRepositoryFilePrefsImpl(private val context: Context) : PostRepository
         val file = context.filesDir.resolve(FILE_NAME)
         if (file.exists()) {
             context.openFileInput(FILE_NAME).bufferedReader().use {
-
                 posts = gson.fromJson(it, token)
                 nextId = (posts.maxOfOrNull { it.id } ?: 0) + 1
                 data.value = posts
             }
         }
+            else {
+                posts = listOf(Post(20,"semen", "10", "hello"))
+                data.value = posts
+            }
+
     }
 
-            private fun sunc() {
-               context.openFileOutput(FILE_NAME, Context.MODE_PRIVATE).bufferedWriter().use {
+    private fun sunc() {
+        context.openFileOutput(FILE_NAME, Context.MODE_PRIVATE).bufferedWriter().use {
 
-                    it.write( gson.toJson(posts))
-                }
-            }
-
-
-            // это обертка для работы с постом , надо просто запомнить - надо поместить пост в переменную
-            // дата специального типа
+            it.write(gson.toJson(posts))
+        }
+    }
 
 
-            // переопределили функцию получения данных , теперь можно брать пост после подготовки
+    override fun likeById(id: Long) {
+        posts = posts.map {
+            if (it.id != id) it
+            else it.copy(
+                likedByMe = !it.likedByMe,
+                likeQuantity = if (it.likedByMe) (it.likeQuantity.toInt() - 1).toString() else (it.likeQuantity.toInt() + 1).toString()
+            )
+        }
+        data.value = posts
+    }
 
-            // функция лайка
+    override fun removeById(id: Long) {
+        posts = posts.filter { it.id != id }
+        data.value = posts
+    }
 
-            override fun likeById(id: Long) {
-                posts = posts.map {
-                    if (it.id != id) it
-                    else it.copy(
-                        likedByMe = !it.likedByMe,
-                        likeQuantity = if (it.likedByMe) (it.likeQuantity.toInt() - 1).toString() else (it.likeQuantity.toInt() + 1).toString()
-                    )
-                }
-                data.value = posts
-            }
+    override fun save(post: Post) {
+        if (post.id == 0L) {
 
-            override fun removeById(id: Long) {
-                posts = posts.filter { it.id != id }
-                data.value = posts
-            }
+            posts = listOf(
+                post.copy(
+                    id = nextId++,
+                    author = "Me",
+                    likedByMe = false,
+                    data = "now"
+                )
+            ) + posts
+            data.value = posts
+            return
+        }
 
-            override fun save(post: Post) {
-                posts = if (post.id == 0L) {
-                    listOf(post.copy(id = nextId++)) + posts
-                } else {
-                    posts.map {
-                        if (it.id != post.id) it else it
-                    }
-                }
-                data.value = posts
-            }
+        posts = posts.map {
+            if (it.id != post.id) it else it.copy(content = post.content)
+        }
+        data.value = posts
+    }
 
-            override fun updatePost(id: Long?, content: String) {
-                posts = posts.map { post ->
-                    if (post.id == id) {
-                        post.copy(content = content) // Копируем только контент, оставляя остальные поля неизменными
-                    } else {
-                        post
-                    }
-                }
-                data.value = posts
-            }
 
-            // функция репоста
-            override fun repostById(id: Long) {
-                posts = posts.map {
-                    if (it.id != id) it
-                    else if (!it.repostByMe) {
-                        it.copy(
-                            repostByMe = true, // Теперь пользователь репостнул
-                            repostQality = (it.repostQality.toInt() + 1).toString() // Увеличение количества репостов
-                        )
-                    } else {
-                        it
-                    }
-                }
-                data.value = posts
-            }
-
-            companion object {
-                private const val FILE_NAME = "posts.json"
-                private val gson = Gson()
-                private val token =
-                    TypeToken.getParameterized(List::class.java, Post::class.java).type
+    override fun updatePost(id: Long?, content: String) {
+        posts = posts.map { post ->
+            if (post.id == id) {
+                post.copy(content = content) // Копируем только контент, оставляя остальные поля неизменными
+            } else {
+                post
             }
         }
+        data.value = posts
+    }
+
+    // функция репоста
+    override fun repostById(id: Long) {
+        posts = posts.map {
+            if (it.id != id) it
+            else if (!it.repostByMe) {
+                it.copy(
+                    repostByMe = true, // Теперь пользователь репостнул
+                    repostQality = (it.repostQality.toInt() + 1).toString() // Увеличение количества репостов
+                )
+            } else {
+                it
+            }
+        }
+        data.value = posts
+    }
+
+    companion object {
+        private const val FILE_NAME = "pos.json"
+        private val gson = Gson()
+        private val token =
+            TypeToken.getParameterized(List::class.java, Post::class.java).type
+    }
+}
 
 
 

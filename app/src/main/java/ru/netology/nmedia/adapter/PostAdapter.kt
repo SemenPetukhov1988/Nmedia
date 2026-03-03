@@ -9,14 +9,10 @@ import androidx.appcompat.widget.PopupMenu
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import ru.netology.nmedia.activity.MainActivity
 import ru.netology.nmedia.R
-import ru.netology.nmedia.activity.NewPostActivity
+
 import ru.netology.nmedia.databinding.CardPostBinding
 import ru.netology.nmedia.dto.Post
-import ru.netology.nmedia.repository.PostRepository
-
-import kotlin.math.ceil
 
 interface OnInteractionListener {
     fun onLike(post: Post)
@@ -30,14 +26,13 @@ interface OnInteractionListener {
 
 
 class PostAdapter(
-    private val editPostLauncher: ActivityResultLauncher<Intent>,
     private val onInteractionListener: OnInteractionListener
 ) : ListAdapter<Post, PostViewHolder>(PostViewHolder.PostDiffCallback) {
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {
         val binding = CardPostBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return PostViewHolder(binding, editPostLauncher,onInteractionListener)
+        return PostViewHolder(binding,onInteractionListener)
     }
 
     override fun onBindViewHolder(holder: PostViewHolder, position: Int) {
@@ -71,9 +66,8 @@ fun formatnumber(count: Int): String {
 
 class PostViewHolder(
     private val binding: CardPostBinding,
-    private val editPostLauncher: ActivityResultLauncher<Intent>,
-    private val onInteractionListener: OnInteractionListener
 
+    private val onInteractionListener: OnInteractionListener
 
 ) :
     RecyclerView.ViewHolder(binding.root) {
@@ -120,10 +114,7 @@ class PostViewHolder(
                         }
 
                         R.id.edit -> {
-                            val intent = Intent(it.context, NewPostActivity::class.java)
-                            intent.putExtra(Intent.EXTRA_TEXT, post.content)
-                            intent.putExtra("POST_ID", post.id)
-                            editPostLauncher.launch(intent) // Используем лончер
+                           onInteractionListener.onEdit(post)
                             true
 
 

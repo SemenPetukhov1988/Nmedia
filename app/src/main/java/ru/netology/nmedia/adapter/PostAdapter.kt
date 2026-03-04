@@ -21,7 +21,7 @@ interface OnInteractionListener {
     fun onEdit(post: Post)
     fun onVideo(video: String)
     fun onShowFulText(post: Post)
-
+    fun onOpen(post : Post)
 }
 
 
@@ -100,6 +100,8 @@ class PostViewHolder(
 
 
         }
+
+        root.setOnClickListener { onInteractionListener.onOpen(post) }
 
         like.setOnClickListener { onInteractionListener.onLike(post) }
 

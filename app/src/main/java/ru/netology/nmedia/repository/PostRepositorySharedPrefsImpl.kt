@@ -56,7 +56,7 @@ class PostRepositorySharedPrefsImpl(context: Context) : PostRepository {
             if (it.id != id) it
             else it.copy(
                 likedByMe = !it.likedByMe,
-                likeQuantity = if (it.likedByMe) (it.likeQuantity.toInt() - 1).toString() else (it.likeQuantity.toInt() + 1).toString()
+                likeQuantity = if (it.likedByMe) (it.likeQuantity - 1) else (it.likeQuantity + 1)
             )
         }
         data.value = posts
@@ -89,6 +89,10 @@ class PostRepositorySharedPrefsImpl(context: Context) : PostRepository {
         data.value = posts
     }
 
+    override fun getAll(): LiveData<List<Post>> {
+        TODO("Not yet implemented")
+    }
+
     // функция репоста
     override fun repostById(id: Long) {
         posts = posts.map {
@@ -96,7 +100,7 @@ class PostRepositorySharedPrefsImpl(context: Context) : PostRepository {
             else if (!it.repostByMe) {
                 it.copy(
                     repostByMe = true, // Теперь пользователь репостнул
-                    repostQality = (it.repostQality.toInt() + 1).toString() // Увеличение количества репостов
+                    repostQality = (it.repostQality + 1) // Увеличение количества репостов
                 )
             } else {
                 it

@@ -75,8 +75,8 @@ class PostViewHolder(
         content.text = post.content
         data.text = post.data
         autor.text = post.author
-        like.text = formatnumber(post.likeQuantity.toInt())
-        repost.text = formatnumber(post.repostQality.toInt())
+        like.text = formatnumber(post.likeQuantity)
+        repost.text = formatnumber(post.repostQality)
 
         repost.isChecked = post.repostByMe
         like.isChecked = post.likedByMe

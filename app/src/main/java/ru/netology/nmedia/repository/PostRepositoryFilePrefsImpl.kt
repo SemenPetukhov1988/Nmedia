@@ -1,13 +1,11 @@
 package ru.netology.nmedia.repository
 
 import android.content.Context
-import androidx.core.content.edit
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import ru.netology.nmedia.dto.Post
-import java.net.Proxy
 
 //3. Реализуем интерфейс репозитория
 
@@ -55,7 +53,7 @@ class PostRepositoryFilePrefsImpl(private val context: Context) : PostRepository
             if (it.id != id) it
             else it.copy(
                 likedByMe = !it.likedByMe,
-                likeQuantity = if (it.likedByMe) (it.likeQuantity.toInt() - 1).toString() else (it.likeQuantity.toInt() + 1).toString()
+                likeQuantity = if (it.likedByMe) (it.likeQuantity- 1) else (it.likeQuantity + 1)
             )
         }
         data.value = posts
@@ -99,6 +97,10 @@ class PostRepositoryFilePrefsImpl(private val context: Context) : PostRepository
         data.value = posts
     }
 
+    override fun getAll(): LiveData<List<Post>> {
+        TODO("Not yet implemented")
+    }
+
     // функция репоста
     override fun repostById(id: Long) {
         posts = posts.map {
@@ -106,7 +108,7 @@ class PostRepositoryFilePrefsImpl(private val context: Context) : PostRepository
             else if (!it.repostByMe) {
                 it.copy(
                     repostByMe = true, // Теперь пользователь репостнул
-                    repostQality = (it.repostQality.toInt() + 1).toString() // Увеличение количества репостов
+                    repostQality = (it.repostQality+ 1) // Увеличение количества репостов
                 )
             } else {
                 it

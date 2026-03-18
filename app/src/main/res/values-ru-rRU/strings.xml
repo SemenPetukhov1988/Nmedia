@@ -2,4 +2,5 @@
 <resources>
     <string name="app_name">Nmedia</string>
     <string name="hello_world">Привет,мир!</string>
+    <string name="Error">"поле не должно быть пустым "</string>
 </resources>

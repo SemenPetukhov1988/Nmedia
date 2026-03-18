@@ -1,6 +1,8 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.ksp)
+
 }
 
 android {
@@ -48,6 +50,8 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.navigation.fragment)
     implementation(libs.androidx.navigation.ui)
+    implementation(libs.androidx.room)
+    ksp(libs.androidx.room.compiler)
     implementation("com.google.code.gson:gson:2.10")
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

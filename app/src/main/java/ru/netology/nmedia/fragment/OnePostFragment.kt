@@ -46,7 +46,7 @@ class OnePostFragment : Fragment() {
             }
 
             override fun OnRepost(post: Post) {
-                viewModel.repostById(post.id)
+                //viewModel.repostById(post.id)
                 // отправка текста поста в другие приложения
                 val intent = Intent().apply {
                     action = Intent.ACTION_SEND

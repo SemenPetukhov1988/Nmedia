@@ -26,7 +26,7 @@ import ru.netology.nmedia.util.TextArg.setValue
 import ru.netology.nmedia.viewModel.PostViewModel
 import kotlin.getValue
 
-class OnePostFragment : Fragment() {
+class  OnePostFragment : Fragment() {
     companion object {
         var Bundle.longArg by LongArg
     }
@@ -88,15 +88,15 @@ class OnePostFragment : Fragment() {
             }
 
         })
-       viewModel.data.observe(viewLifecycleOwner) { posts ->
-           val currentPost = posts.find { it.id == postId }
-           if (currentPost == null) {
-               // Пост удалён или стал недействительным
-               findNavController().navigateUp()
-               return@observe
-           }
-           viewHolder.bind(currentPost)
-       }
+//       viewModel.data.observe(viewLifecycleOwner) { posts ->
+//           val currentPost = posts.find { it.id == postId }
+//           if (currentPost == null) {
+//               // Пост удалён или стал недействительным
+//               findNavController().navigateUp()
+//               return@observe
+//           }
+//           viewHolder.bind(currentPost)
+//       }
 
         return binding.root
     }

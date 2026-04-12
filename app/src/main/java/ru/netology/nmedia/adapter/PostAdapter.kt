@@ -26,8 +26,8 @@ interface OnInteractionListener {
 
 
 class PostAdapter(
-    private val onInteractionListener: OnInteractionListener
-) : ListAdapter<Post, PostViewHolder>(PostViewHolder.PostDiffCallback) {
+    private val onInteractionListener: OnInteractionListener) :
+    ListAdapter<Post, PostViewHolder>(PostViewHolder.PostDiffCallback) {
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostViewHolder {
@@ -73,33 +73,33 @@ class PostViewHolder(
     RecyclerView.ViewHolder(binding.root) {
     fun bind(post: Post) = with(binding) {
         content.text = post.content
-        data.text = post.data
+        data.text = post.published.toString()
         autor.text = post.author
-        like.text = formatnumber(post.likeQuantity)
-        repost.text = formatnumber(post.repostQality)
+        like.text = formatnumber(post.likes)
+        //repost.text = formatnumber(post.repostQality)
 
-        repost.isChecked = post.repostByMe
+        //repost.isChecked = post.repostByMe
         like.isChecked = post.likedByMe
 
-        if (post.videoVisibility) {
-            binding.video.visibility = View.VISIBLE
+//        if (post.videoVisibility) {
+//            binding.video.visibility = View.VISIBLE
+//
+//        }else{
+//            binding.video.visibility = View.GONE
+//        }
+//
+//        video.setOnClickListener {
+//            onInteractionListener.onVideo(post.videoUrl)
+//
+//        }
 
-        }else{
-            binding.video.visibility = View.GONE
-        }
-
-        video.setOnClickListener {
-            onInteractionListener.onVideo(post.videoUrl)
-
-        }
-
-        repost.setOnClickListener {
-            if (!post.repostByMe) {
-                onInteractionListener.OnRepost(post)
-            }
-
-
-        }
+//        repost.setOnClickListener {
+//            if (!post.repostByMe) {
+//                onInteractionListener.OnRepost(post)
+//            }
+//
+//
+//        }
 
         root.setOnClickListener { onInteractionListener.onOpen(post) }
 
@@ -129,7 +129,7 @@ class PostViewHolder(
 
             }.show()
         }
-        repost.isEnabled = !post.repostByMe
+       // repost.isEnabled = !post.repostByMe
     }
 
 

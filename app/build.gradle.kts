@@ -28,6 +28,11 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            manifestPlaceholders ["usesCleartextTraffic"] = false
+        }
+
+        debug {
+            manifestPlaceholders ["usesCleartextTraffic"] = true
         }
     }
     compileOptions {
@@ -40,6 +45,7 @@ android {
     buildFeatures {
         viewBinding = true
     }
+
 }
 
 dependencies {
@@ -51,6 +57,7 @@ dependencies {
     implementation(libs.androidx.navigation.fragment)
     implementation(libs.androidx.navigation.ui)
     implementation(libs.androidx.room)
+    implementation(libs.okhttp)
     ksp(libs.androidx.room.compiler)
     implementation("com.google.code.gson:gson:2.10")
     testImplementation(libs.junit)

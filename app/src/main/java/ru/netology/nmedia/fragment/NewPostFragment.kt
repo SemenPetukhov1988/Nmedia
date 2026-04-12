@@ -11,6 +11,8 @@ import ru.netology.nmedia.databinding.FragmentNewPostBinding
 import ru.netology.nmedia.util.TextArg
 import ru.netology.nmedia.viewModel.PostViewModel
 import ru.netology.nmedia.R
+import ru.netology.nmedia.util.AndroidUtils
+
 class NewPostFragment : Fragment() {
 
     companion object {
@@ -32,11 +34,15 @@ class NewPostFragment : Fragment() {
         }
 
         binding.save.setOnClickListener {
-            if (!binding.content.text.isNullOrBlank()) {
-                val content = binding.content.text.toString()
-                viewModel.save(content)
-            }
-            findNavController().navigate(R.id.feedFragment)
+
+            val content = binding.content.text.toString()
+            viewModel.save(content)
+            AndroidUtils.hideKeyboard(requireView())
+
+        }
+        viewModel.postCreated.observe(viewLifecycleOwner) {
+            viewModel.load()
+            findNavController().navigateUp()
         }
         return binding.root
     }

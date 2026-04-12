@@ -6,7 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.net.toUri
-import androidx.core.os.bundleOf
+import androidx.core.view.isVisible
+
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -72,6 +73,7 @@ class FeedFragment : Fragment() {
                     longArg = post.id
                 })
             }
+
             override fun onShowFulText(post: Post) {
 //                showFullText(post.content)
             }
@@ -81,14 +83,16 @@ class FeedFragment : Fragment() {
         )
         binding.list?.adapter = adapter
 
-        viewModel.data.observe(viewLifecycleOwner) { posts ->
-            val newPost = posts.size > adapter.currentList.size
-            adapter.submitList(posts) {
-                if (newPost) {
-                    binding.list?.scrollToPosition(0)
-                }
+        viewModel.data.observe(viewLifecycleOwner) { state ->
+            adapter.submitList(state.posts) {
+                binding.errorgroup.isVisible = state.error
+                binding.progress.isVisible = state.loading
+                binding.empty.isVisible = state.empty
             }
 
+        }
+        binding.retry.setOnClickListener {
+            viewModel.load()
         }
 
         binding.add.setOnClickListener {

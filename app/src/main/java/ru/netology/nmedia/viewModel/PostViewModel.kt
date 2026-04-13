@@ -96,6 +96,14 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
         }
 
     }
-    fun removeById(id: Long) = repository.removeById(id)
+
+    fun removeById(id: Long) {
+        thread {
+            repository.removeById(id)
+            val currentPosts = _data.value?.posts?.filterNot { it.id == id } ?: emptyList()
+            _data.postValue(_data.value?.copy(posts = currentPosts))
+        }
+    }
+
     fun repostById(id: Long) = repository.repostById(id)
 }

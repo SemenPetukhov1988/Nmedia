@@ -61,9 +61,17 @@ class PostRepositoryImpl () : PostRepository  {
         return gson.fromJson(stringResponse, Post::class.java)
     }
 
-    override fun removeById(id: Long) {
-        TODO("Not yet implemented")
-    }
+    override fun removeById(id: Long)  {
+       val url = "${BASE_URL}api/posts/$id"
+        val call = client.newCall(
+            request = Request.Builder()
+                .url(url)
+                .delete()
+                .build()
+        )
+         call.execute().close()
+
+            }
 
     override fun save(post: Post) : Post {
         val call =  client.newCall(

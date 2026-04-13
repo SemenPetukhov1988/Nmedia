@@ -3,4 +3,8 @@
     <string name="hello_world">Hello,World</string>
     <string name="Error">error</string>
     <string name="description_post_like" >like</string>
+    <string name="netologyAutor">Netology</string>
+    <string name="Not_Post">Тут постов нет</string>
+    <string name="replay">Повторить</string>
+    <string name="NetError">Ошибка сети</string>
 </resources>

@@ -88,6 +88,7 @@ class FeedFragment : Fragment() {
                 binding.errorgroup.isVisible = state.error
                 binding.progress.isVisible = state.loading
                 binding.empty.isVisible = state.empty
+                binding.add.isEnabled = !state.loading
             }
 
         }

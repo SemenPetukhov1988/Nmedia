@@ -8,6 +8,7 @@ import okio.IOException
 import ru.netology.nmedia.db.AppDb
 import ru.netology.nmedia.dto.Post
 import ru.netology.nmedia.model.FeedModel
+import ru.netology.nmedia.model.SaveModel
 import ru.netology.nmedia.repository.PostRepository
 import ru.netology.nmedia.repository.PostRepositoryImpl
 import ru.netology.nmedia.util.SingleLiveEvent
@@ -30,6 +31,8 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
     private val repository: PostRepository = PostRepositoryImpl()
     private val _data = MutableLiveData(FeedModel())
 
+    val dataSave = MutableLiveData(SaveModel())
+
     val data: LiveData<FeedModel>
         get() = _data
     val edited = MutableLiveData(empty)
@@ -44,6 +47,7 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
 
     fun save(content: String) {
         thread {
+            dataSave.postValue(SaveModel(loading = true))
             edited.value?.let {
                 val text = content.trim()
                 if (it.content != text) {
@@ -52,6 +56,7 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
             }
             _postCreated.postValue(Unit)
             edited.postValue(empty)
+            dataSave.postValue((SaveModel(loading = false)))
         }
     }
 
@@ -61,11 +66,13 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
 
     fun load() {
         // работа на фоновом потоке
+        // если
         thread {
             _data.postValue(FeedModel(loading = true))
             try {
                 val posts = repository.getAll()
                 _data.postValue(FeedModel(posts = posts, empty = posts.isEmpty()))
+
             } catch (e: IOException) {
                 _data.postValue(FeedModel(error = true))
 

@@ -59,6 +59,7 @@ dependencies {
     implementation(libs.androidx.room)
     implementation(libs.okhttp)
     ksp(libs.androidx.room.compiler)
+    implementation("com.github.bumptech.glide:glide:4.16.0")
     implementation("com.google.code.gson:gson:2.10")
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

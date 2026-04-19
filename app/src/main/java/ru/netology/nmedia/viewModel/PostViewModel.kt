@@ -1,6 +1,7 @@
 package ru.netology.nmedia.viewModel
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -48,15 +49,20 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
     fun save(content: String) {
         thread {
             dataSave.postValue(SaveModel(loading = true))
-            edited.value?.let {
-                val text = content.trim()
-                if (it.content != text) {
-                    repository.save(it.copy(content = text))
+            try {
+
+                edited.value?.let {
+                    val text = content.trim()
+                    if (it.content != text) {
+                        repository.save(it.copy(content = text))
+                    }
                 }
+                _postCreated.postValue(Unit)
+                edited.postValue(empty)
+                dataSave.postValue((SaveModel(loading = false)))
+            } catch (e: Exception) {
+                dataSave.postValue(SaveModel(error = true))
             }
-            _postCreated.postValue(Unit)
-            edited.postValue(empty)
-            dataSave.postValue((SaveModel(loading = false)))
         }
     }
 
@@ -80,35 +86,100 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
+    var isProcessing = false
+
     fun likeById(id: Long) {
+        if (isProcessing) return
+        isProcessing = true
+
         thread {
-            val currentPost = _data.value?.posts?.find { it.id == id }
-            if (currentPost == null) {
-                // Можно добавить лог или просто выйти
-                return@thread
-            }
-            val updatedPost = if (currentPost.likedByMe) {
-                repository.unLikeById(id)
-            } else {
-                repository.likeById(id)
-            }
+            // 1. Устанавливаем состояние загрузки
+            _data.postValue(_data.value?.copy(loading = true))
 
-            val currentPosts = _data.value!!.posts.toMutableList()
-            val index = currentPosts.indexOfFirst { it.id == id }
-            if (index != -1) {
-                currentPosts[index] = updatedPost
-                _data.postValue(_data.value!!.copy(posts = currentPosts))
 
+            try {
+                // 2. Получаем текущее состояние лайка
+                val currentLiked = _data.value?.posts?.find { it.id == id }?.likedByMe
+                // 3. Отправляем запрос на сервер
+                val updatedPost = if (currentLiked == true) {
+                    repository.unLikeById(id)
+                } else {
+                    repository.likeById(id)
+                }
+
+                if (updatedPost == null) {
+                    // 4. Ошибка: сервер вернул null
+
+                    _data.postValue(
+                        _data.value?.copy(
+                            loading = false,
+                            error = true
+                        )
+                    )
+                } else {
+                    // 5. Успех: обновляем UI данными от сервера
+                    _data.value?.let { currentData ->
+                        val finalPosts = currentData.posts.map { post ->
+                            if (post.id == id) updatedPost else post
+                        }
+                        _data.postValue(
+                            currentData.copy(
+                                posts = finalPosts,
+                                loading = false,  // Сбрасываем загрузку
+                                error = false   // Сбрасываем ошибку
+                            )
+                        )
+
+                    }
+                }
+            } catch (e: Exception) {
+                Log.e("PostViewModel", "Исключение при обработке лайка: ${e.message}", e)
+
+                // 6. Ошибка сети/исключение: показываем ошибку
+                _data.postValue(
+                    _data.value?.copy(
+                        loading = false,
+                        error = true
+                    )
+                )
+            } finally {
+                // 7. Всегда сбрасываем isProcessing в конце операции
+                isProcessing = false
             }
         }
-
     }
 
     fun removeById(id: Long) {
         thread {
-            repository.removeById(id)
-            val currentPosts = _data.value?.posts?.filterNot { it.id == id } ?: emptyList()
-            _data.postValue(_data.value?.copy(posts = currentPosts))
+            // Устанавливаем состояние загрузки
+            _data.postValue(_data.value?.copy(loading = true))
+
+            try {
+                repository.removeById(id)
+
+                // Успех: обновляем список постов и сбрасываем флаги
+                _data.value?.let { currentData ->
+                    val updatedPosts = currentData.posts.filterNot { it.id == id }
+                    _data.postValue(
+                        currentData.copy(
+                            posts = updatedPosts,
+                            loading = false,  // Сбрасываем загрузку
+                            error = false,   // Сбрасываем ошибку
+                            empty = updatedPosts.isEmpty()
+                        )
+                    )
+                }
+            } catch (e: Exception) {
+                Log.e("PostViewModel", "Ошибка удаления поста $id", e)
+
+                // Ошибка: сохраняем текущие данные, но устанавливаем флаг ошибки и сбрасываем загрузку
+                _data.postValue(
+                    _data.value?.copy(
+                        loading = false,  // ОБЯЗАТЕЛЬНО сбрасываем загрузку!
+                        error = true     // Устанавливаем флаг ошибки
+                    )
+                )
+            }
         }
     }
 

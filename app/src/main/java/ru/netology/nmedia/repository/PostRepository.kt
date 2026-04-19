@@ -9,13 +9,13 @@ interface PostRepository {
 
     fun repostById(id: Long) // функция можно сделать репост
 
-    fun likeById(id: Long) : Post
+    fun likeById(id: Long) : Post?
 
-    fun unLikeById (id : Long) : Post
+    fun unLikeById (id : Long) : Post?
 
     fun removeById(id: Long)
 
-    fun save(post: Post): Post
+    fun save(post: Post)
 
     fun updatePost(id: Long?, content: String)
     fun getAll():List<Post>

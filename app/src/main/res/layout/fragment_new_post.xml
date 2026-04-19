@@ -7,6 +7,7 @@
     android:layout_height="match_parent"
     tools:context=".fragment.NewPostFragment">
 
+
     <ProgressBar
         android:id="@+id/progress_save"
         android:layout_width="wrap_content"
@@ -14,10 +15,12 @@
         android:visibility="gone"
         app:layout_anchor="@+id/content"
         app:layout_anchorGravity="center"
-        app:layout_constraintBottom_toBottomOf="parent"
+
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+
 
     <EditText
         android:id="@+id/content"
@@ -31,6 +34,14 @@
         android:inputType="textMultiLine"
         android:paddingTop="16dp"
         app:layout_constraintBottom_toBottomOf="parent" />
+
+    <Button
+        android:id="@+id/retrySave"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="Ошибка сети. Нажми чтобы повторить!"
+        android:visibility="gone"/>
 
 
     <com.google.android.material.bottomappbar.BottomAppBar

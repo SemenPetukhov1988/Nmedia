@@ -75,7 +75,8 @@ class PostViewHolder(
     RecyclerView.ViewHolder(binding.root) {
 
     fun bind(post: Post) = with(binding) {
-      if (post.authorAvatar != null && post.authorAvatar.isNotEmpty()) {
+
+        if (post.authorAvatar != null && post.authorAvatar.isNotEmpty()) {
         Glide.with(binding.avatar)
             .load("http://10.0.2.2:9999/avatars/${post.authorAvatar}")
             .error(R.drawable.cansel)
@@ -91,7 +92,6 @@ class PostViewHolder(
         autor.text = post.author
         like.text = formatnumber(post.likes)
         //repost.text = formatnumber(post.repostQality)
-
         //repost.isChecked = post.repostByMe
         like.isChecked = post.likedByMe
 

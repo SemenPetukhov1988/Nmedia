@@ -48,11 +48,25 @@ class NewPostFragment : Fragment() {
                 binding.content.isEnabled = false
                 binding.save.isEnabled = false
             }
+            if (state.error) {
+                binding.retrySave.isVisible = true
+                binding.progressSave.isVisible = false
+            }
         }
+
+        binding.retrySave.setOnClickListener {
+            binding.retrySave.setOnClickListener {
+                val content = binding.content.text.toString()
+                viewModel.save(content)
+            }
+        }
+
         viewModel.postCreated.observe(viewLifecycleOwner) {
             viewModel.load()
             findNavController().navigateUp()
         }
+
+
         return binding.root
     }
 

@@ -85,12 +85,15 @@ class FeedFragment : Fragment() {
 
         viewModel.data.observe(viewLifecycleOwner) { state ->
             adapter.submitList(state.posts) {
+                // Устанавливаем видимость элементов
                 binding.errorgroup.isVisible = state.error
                 binding.progress.isVisible = state.loading
                 binding.empty.isVisible = state.empty
                 binding.add.isEnabled = !state.loading
-            }
 
+                binding.list.isVisible = !state.loading && !state.error
+
+            }
         }
         binding.retry.setOnClickListener {
             viewModel.load()

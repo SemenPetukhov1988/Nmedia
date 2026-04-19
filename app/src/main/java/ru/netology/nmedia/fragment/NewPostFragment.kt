@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -11,6 +12,9 @@ import ru.netology.nmedia.databinding.FragmentNewPostBinding
 import ru.netology.nmedia.util.TextArg
 import ru.netology.nmedia.viewModel.PostViewModel
 import ru.netology.nmedia.R
+import ru.netology.nmedia.model.SaveModel
+import ru.netology.nmedia.util.AndroidUtils
+
 class NewPostFragment : Fragment() {
 
     companion object {
@@ -32,12 +36,37 @@ class NewPostFragment : Fragment() {
         }
 
         binding.save.setOnClickListener {
-            if (!binding.content.text.isNullOrBlank()) {
+
+            val content = binding.content.text.toString()
+            viewModel.save(content)
+            AndroidUtils.hideKeyboard(requireView())
+
+        }
+        viewModel.dataSave.observe(viewLifecycleOwner) { state ->
+            if (state.loading) {
+                binding.progressSave.isVisible = true
+                binding.content.isEnabled = false
+                binding.save.isEnabled = false
+            }
+            if (state.error) {
+                binding.retrySave.isVisible = true
+                binding.progressSave.isVisible = false
+            }
+        }
+
+        binding.retrySave.setOnClickListener {
+            binding.retrySave.setOnClickListener {
                 val content = binding.content.text.toString()
                 viewModel.save(content)
             }
-            findNavController().navigate(R.id.feedFragment)
         }
+
+        viewModel.postCreated.observe(viewLifecycleOwner) {
+            viewModel.load()
+            findNavController().navigateUp()
+        }
+
+
         return binding.root
     }
 

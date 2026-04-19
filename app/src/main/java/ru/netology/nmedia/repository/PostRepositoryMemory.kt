@@ -1,99 +1,99 @@
-package ru.netology.nmedia.repository
-
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import ru.netology.nmedia.dto.Post
-
-//3. Реализуем интерфейс репозитория
-
-// создали класс наследуемый через двоеточие от интерфейса
-
-class PostRepositoryMemory : PostRepository {
-    private var nextId = 1L
-
-    // сделали пост, и заполнили его данные (поля), чтобы с ним работать
-    var posts = listOf(
-
-        Post(
-            nextId++, "Нетология. Университет интернет профессий будущего", "13 января 2026 года",
-            "«Нетология» специализируется на  дополнительном обучении специалистов в сферах интернет-маркетинга, управления проектами, дизайна и пользовательского интерфейса, программирования, аналитики и data science, финансов, а также творческих профессий и социальных навыков.",
-            false, 5199, false, 5199
-        ),
-        Post(
-            nextId++, "Нетология. Университет интернет профессий будущего", "13 января 2026 года",
-            "«Нетология» специализируется на  дополнительном обучении специалистов в сферах интернет-маркетинга, управления проектами, дизайна и пользовательского интерфейса, программирования, аналитики и data science, финансов, а также творческих профессий и социальных навыков.Нетология» специализируется на  дополнительном обучении специалистов в сферах интернет-маркетинга, управления проектами, дизайна и пользовательского интерфейса, программирования, аналитики и data science, финансов, а также творческих профессий и социальных навыков.Нетология» специализируется на  дополнительном обучении специалистов в сферах интернет-маркетинга, управления проектами, дизайна и пользовательского интерфейса, программирования, аналитики и data science, финансов, а также творческих профессий и социальных навыков.",
-            false, 5199, false, 5199
-
-    ))
-
-
-    // это обертка для работы с постом , надо просто запомнить - надо поместить пост в переменную
-    // дата специального типа
-    private val data = MutableLiveData(posts)
-
-    // переопределили функцию получения данных , теперь можно брать пост после подготовки
-    override fun getData(): LiveData<List<Post>> = data
-
-    // функция лайка
-
-    override fun likeById(id: Long) {
-        posts = posts.map {
-            if (it.id != id) it
-            else it.copy(
-                likedByMe = !it.likedByMe,
-                likeQuantity = if (it.likedByMe) (it.likeQuantity - 1) else (it.likeQuantity + 1)
-            )
-        }
-        data.value = posts
-    }
-
-    override fun removeById(id: Long) {
-        posts = posts.filter { it.id != id }
-        data.value = posts
-    }
-
-    override fun save(post: Post) {
-        posts = if (post.id == 0L) {
-            listOf(post.copy(id = nextId++)) + posts
-        } else {
-            posts.map {
-                if (it.id != post.id) it else it
-            }
-        }
-        data.value = posts
-    }
-
-    override fun updatePost(id: Long?, content: String) {
-        posts = posts.map { post ->
-            if (post.id == id) {
-                post.copy(content = content) // Копируем только контент, оставляя остальные поля неизменными
-            } else {
-                post
-            }
-        }
-        data.value = posts
-    }
-
-    override fun getAll(): LiveData<List<Post>> {
-        TODO("Not yet implemented")
-    }
-
-    // функция репоста
-    override fun repostById(id: Long) {
-        posts = posts.map {
-            if (it.id != id) it
-            else if (!it.repostByMe) {
-                it.copy(
-                    repostByMe = true, // Теперь пользователь репостнул
-                    repostQality = (it.repostQality + 1) // Увеличение количества репостов
-                )
-            } else {
-                it
-            }
-        }
-        data.value = posts
-    }
-}
+//package ru.netology.nmedia.repository
+//
+//import androidx.lifecycle.LiveData
+//import androidx.lifecycle.MutableLiveData
+//import ru.netology.nmedia.dto.Post
+//
+////3. Реализуем интерфейс репозитория
+//
+//// создали класс наследуемый через двоеточие от интерфейса
+//
+//class PostRepositoryMemory : PostRepository {
+//    private var nextId = 1L
+//
+//    // сделали пост, и заполнили его данные (поля), чтобы с ним работать
+//    var posts = listOf(
+//
+//        Post(
+//            nextId++, "Нетология. Университет интернет профессий будущего", "13 января 2026 года",
+//            "«Нетология» специализируется на  дополнительном обучении специалистов в сферах интернет-маркетинга, управления проектами, дизайна и пользовательского интерфейса, программирования, аналитики и data science, финансов, а также творческих профессий и социальных навыков.",
+//            false, 5199, false, 5199
+//        ),
+//        Post(
+//            nextId++, "Нетология. Университет интернет профессий будущего", "13 января 2026 года",
+//            "«Нетология» специализируется на  дополнительном обучении специалистов в сферах интернет-маркетинга, управления проектами, дизайна и пользовательского интерфейса, программирования, аналитики и data science, финансов, а также творческих профессий и социальных навыков.Нетология» специализируется на  дополнительном обучении специалистов в сферах интернет-маркетинга, управления проектами, дизайна и пользовательского интерфейса, программирования, аналитики и data science, финансов, а также творческих профессий и социальных навыков.Нетология» специализируется на  дополнительном обучении специалистов в сферах интернет-маркетинга, управления проектами, дизайна и пользовательского интерфейса, программирования, аналитики и data science, финансов, а также творческих профессий и социальных навыков.",
+//            false, 5199, false, 5199
+//
+//    ))
+//
+//
+//    // это обертка для работы с постом , надо просто запомнить - надо поместить пост в переменную
+//    // дата специального типа
+//    private val data = MutableLiveData(posts)
+//
+//    // переопределили функцию получения данных , теперь можно брать пост после подготовки
+//
+//
+//    // функция лайка
+//
+//    override fun likeById(id: Long) {
+//        posts = posts.map {
+//            if (it.id != id) it
+//            else it.copy(
+//                likedByMe = !it.likedByMe,
+//                likeQuantity = if (it.likedByMe) (it.likeQuantity - 1) else (it.likeQuantity + 1)
+//            )
+//        }
+//        data.value = posts
+//    }
+//
+//    override fun removeById(id: Long) {
+//        posts = posts.filter { it.id != id }
+//        data.value = posts
+//    }
+//
+//    override fun save(post: Post) {
+//        posts = if (post.id == 0L) {
+//            listOf(post.copy(id = nextId++)) + posts
+//        } else {
+//            posts.map {
+//                if (it.id != post.id) it else it
+//            }
+//        }
+//        data.value = posts
+//    }
+//
+//    override fun updatePost(id: Long?, content: String) {
+//        posts = posts.map { post ->
+//            if (post.id == id) {
+//                post.copy(content = content) // Копируем только контент, оставляя остальные поля неизменными
+//            } else {
+//                post
+//            }
+//        }
+//        data.value = posts
+//    }
+//
+//    override fun getAll(): List<Post> {
+//        TODO("Not yet implemented")
+//    }
+//
+//    // функция репоста
+//    override fun repostById(id: Long) {
+//        posts = posts.map {
+//            if (it.id != id) it
+//            else if (!it.repostByMe) {
+//                it.copy(
+//                    repostByMe = true, // Теперь пользователь репостнул
+//                    repostQality = (it.repostQality + 1) // Увеличение количества репостов
+//                )
+//            } else {
+//                it
+//            }
+//        }
+//        data.value = posts
+//    }
+//}
 
 
 

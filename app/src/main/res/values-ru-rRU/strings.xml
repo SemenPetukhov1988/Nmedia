@@ -3,4 +3,9 @@
     <string name="app_name">Nmedia</string>
     <string name="hello_world">Привет,мир!</string>
     <string name="Error">"поле не должно быть пустым "</string>
+    <string name="description_post_like">лайк</string>
+    <string name="netologyAutor">Netology</string>
+    <string name="Not_Post">Not Post</string>
+    <string name="replay">Replay</string>
+    <string name="NetError">Error</string>
 </resources>
